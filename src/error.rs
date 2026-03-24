@@ -107,57 +107,57 @@ pub enum ParserErrorKind {
 impl Display for ParserErrorKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParserErrorKind::SecondRootSection { label } => {
+            Self::SecondRootSection { label } => {
                 write!(f, "found second root section {label:?}")
             }
-            ParserErrorKind::SectionLevelTooDeep { level } => {
+            Self::SectionLevelTooDeep { level } => {
                 write!(f, "found a section of a too deep level {level}")
             }
-            ParserErrorKind::UnmatchedDoubleCloseBrace => {
+            Self::UnmatchedDoubleCloseBrace => {
                 write!(f, "found an unmatched double closing brace }}}}")
             }
-            ParserErrorKind::UnmatchedDoubleOpenBrace => {
+            Self::UnmatchedDoubleOpenBrace => {
                 write!(f, "found an unmatched double open brace {{{{")
             }
-            ParserErrorKind::UnmatchedDoubleCloseBracket => {
+            Self::UnmatchedDoubleCloseBracket => {
                 write!(f, "found an unmatched double close bracket ]]")
             }
-            ParserErrorKind::UnmatchedDoubleOpenBracket => {
+            Self::UnmatchedDoubleOpenBracket => {
                 write!(f, "found an unmatched double open bracket [[")
             }
-            ParserErrorKind::UnmatchedNoWikiClose => {
+            Self::UnmatchedNoWikiClose => {
                 write!(f, "found an unmatched nowiki close tag </nowiki>")
             }
-            ParserErrorKind::UnmatchedNoWikiOpen => {
+            Self::UnmatchedNoWikiOpen => {
                 write!(f, "found an unmatched nowiki open tag <nowiki>")
             }
-            ParserErrorKind::UnexpectedTokenInTag { token } => {
+            Self::UnexpectedTokenInTag { token } => {
                 write!(f, "found an unexpected token {token:?} in a tag")
             }
-            ParserErrorKind::UnexpectedTokenInParameter { token } => {
+            Self::UnexpectedTokenInParameter { token } => {
                 write!(f, "found an unexpected token {token:?} in a parameter")
             }
-            ParserErrorKind::UnexpectedTokenInLink { token } => {
+            Self::UnexpectedTokenInLink { token } => {
                 write!(f, "found an unexpected token {token:?} in a link")
             }
-            ParserErrorKind::UnexpectedTokenInLinkLabel { token } => {
+            Self::UnexpectedTokenInLinkLabel { token } => {
                 write!(f, "found an unexpected token {token:?} in a link label")
             }
-            ParserErrorKind::UnexpectedTokenInFormattedText { token } => {
+            Self::UnexpectedTokenInFormattedText { token } => {
                 write!(f, "found an unexpected token {token:?} in formatted text")
             }
-            ParserErrorKind::UnexpectedTokenInListItem { token } => {
+            Self::UnexpectedTokenInListItem { token } => {
                 write!(f, "found an unexpected token {token:?} in a list item")
             }
-            ParserErrorKind::UnexpectedToken { expected, actual } => write!(
+            Self::UnexpectedToken { expected, actual } => write!(
                 f,
                 "found an unexpected token {actual:?} where {expected:?} was expected"
             ),
-            ParserErrorKind::UnclosedTextFormatting { formatting } => write!(
+            Self::UnclosedTextFormatting { formatting } => write!(
                 f,
                 "found an unclosed text formatting expression {formatting}:?"
             ),
-            ParserErrorKind::UnexpectedEof => {
+            Self::UnexpectedEof => {
                 write!(f, "the file ended, but we expected more content")
             }
         }

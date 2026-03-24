@@ -47,7 +47,7 @@ pub struct TextPosition {
 
 impl TextPosition {
     /// Create a new text position at the given `line` and `column`.
-    pub fn new(line: usize, column: usize) -> Self {
+    pub const fn new(line: usize, column: usize) -> Self {
         Self { line, column }
     }
 }
@@ -72,7 +72,7 @@ impl<'input> PositionAwareStrIterator<'input> {
         }
     }
 
-    pub fn remaining_input(&self) -> &'input str {
+    pub const fn remaining_input(&self) -> &'input str {
         self.input
     }
 
@@ -224,7 +224,7 @@ impl<'tokenizer> MultipeekTokenizer<'tokenizer> {
         }
     }
 
-    pub fn peek(&mut self, distance: usize) -> &(Token, TextPosition) {
+    pub fn peek(&mut self, distance: usize) -> &(Token<'_>, TextPosition) {
         while self.peek.len() < distance + 1 {
             let text_position = self.tokenizer.input.position;
             self.peek.push_back((self.tokenizer.next(), text_position));
@@ -235,7 +235,7 @@ impl<'tokenizer> MultipeekTokenizer<'tokenizer> {
     /// Peeks a position inside the current peek buffer.
     /// If the position and no position after it was not yet peeked, returns `None`.
     /// This is useful because it does not require a mutable reference to self.
-    pub fn repeek(&self, distance: usize) -> Option<&(Token, TextPosition)> {
+    pub fn repeek(&self, distance: usize) -> Option<&(Token<'_>, TextPosition)> {
         self.peek.get(distance)
     }
 
@@ -254,7 +254,7 @@ impl<'tokenizer> MultipeekTokenizer<'tokenizer> {
 
     /// Returns `true` if the tokenizer has not yet been advanced.
     #[allow(unused)]
-    pub fn is_at_start(&self) -> bool {
+    pub const fn is_at_start(&self) -> bool {
         !self.next_was_called
     }
 }
