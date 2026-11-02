@@ -1,3 +1,5 @@
+# This workflow is managed by gh actions-lock.
+
 name: CI
 
 on:
@@ -20,18 +22,18 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: ${{ matrix.rust }}
           override: true
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.3
         with:
           key: ${{ matrix.os }}
 
       - name: Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command:  check
           args: --all --bins --examples --lib
@@ -48,18 +50,18 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: ${{ matrix.rust }}
           override: true
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.3
         with:
           key: ${{ matrix.os }}
 
       - name: Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command:  check
           args: --all-features --all --bins --examples --tests --lib
@@ -73,16 +75,16 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Install MSRV toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: 1.65.0
           override: true
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.3
 
       - name: Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: check
           args: --all-features --all --bins --examples --tests --lib
@@ -101,18 +103,18 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: ${{ matrix.rust }}
           override: true
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.3
         with:
           key: ${{ matrix.os }}
 
       - name: Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command:  check
           args: --all-features --all --bins --examples --tests --lib
@@ -131,43 +133,43 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: ${{ matrix.rust }}
           components: rustfmt, clippy
           override: true
 
       - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.3
         with:
           key: ${{ matrix.os }}
 
       - name: Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command:  check
           args: --all-features --all --bins --examples --tests --lib
 
       - name: Test
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: test
           args: --all-features --all
 
       - name: Docs
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: doc
           args: --all-features
 
       - name: Format
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: fmt
           args: -- --check
 
       - name: Lint
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: clippy
           args: --all-features --bins --examples --tests --lib
@@ -178,7 +180,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.8.0
       - name: ⚡ Cache
         uses: actions/cache@v2
         with:
@@ -189,28 +191,28 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: stable
           override: true
           default: true
 
       - name: Install nightly toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: nightly
           override: true
           default: false
 
       - name: Install cargo-tarpaulin
-        uses: actions-rs/install@v0.1
+        uses: actions-rs/install@v0.1.2
         with:
           crate: cargo-tarpaulin
           version: latest
           use-tool-cache: true
 
       - name: Coverage Report with tarpaulin
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.3
         with:
           command: tarpaulin
           args: --all-features --out Lcov --run-types Tests Doctests -- --test-threads 1
