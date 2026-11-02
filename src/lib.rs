@@ -1,7 +1,7 @@
 //! Parse wikitext into a semantic representation.
 
-#![warn(missing_docs)]
-
+#![deny(clippy::all)]
+#![warn(clippy::nursery, missing_docs)]
 mod error;
 mod level_stack;
 mod parser;

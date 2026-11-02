@@ -49,7 +49,7 @@ pub struct Section {
     /// The paragraphs of the section.
     pub paragraphs: Vec<Paragraph>,
     /// The subsections of the section.
-    pub subsections: Vec<Section>,
+    pub subsections: Vec<Self>,
 }
 
 impl Section {
@@ -149,8 +149,8 @@ impl Line {
     /// Returns true if the line would be ignored by the wikitext renderer.
     pub fn is_empty(&self) -> bool {
         match self {
-            Line::Normal { text } => text.is_empty(),
-            Line::List { .. } => false,
+            Self::Normal { text } => text.is_empty(),
+            Self::List { .. } => false,
         }
     }
 }
@@ -305,18 +305,18 @@ impl TextFormatting {
     /// Returns the new formatting to use after encountering an apostrophe run of length `apostrophe_length`.
     pub fn next_formatting(&self, apostrophe_length: usize) -> Self {
         match (self, apostrophe_length) {
-            (TextFormatting::Normal, 2) => TextFormatting::Italic,
-            (TextFormatting::Normal, 3) => TextFormatting::Bold,
-            (TextFormatting::Normal, 5) => TextFormatting::ItalicBold,
-            (TextFormatting::Italic, 2) => TextFormatting::Normal,
-            (TextFormatting::Italic, 3) => TextFormatting::ItalicBold,
-            (TextFormatting::Italic, 5) => TextFormatting::Bold,
-            (TextFormatting::Bold, 2) => TextFormatting::ItalicBold,
-            (TextFormatting::Bold, 3) => TextFormatting::Normal,
-            (TextFormatting::Bold, 5) => TextFormatting::Italic,
-            (TextFormatting::ItalicBold, 2) => TextFormatting::Bold,
-            (TextFormatting::ItalicBold, 3) => TextFormatting::Italic,
-            (TextFormatting::ItalicBold, 5) => TextFormatting::Normal,
+            (Self::Normal, 2) => Self::Italic,
+            (Self::Normal, 3) => Self::Bold,
+            (Self::Normal, 5) => Self::ItalicBold,
+            (Self::Italic, 2) => Self::Normal,
+            (Self::Italic, 3) => Self::ItalicBold,
+            (Self::Italic, 5) => Self::Bold,
+            (Self::Bold, 2) => Self::ItalicBold,
+            (Self::Bold, 3) => Self::Normal,
+            (Self::Bold, 5) => Self::Italic,
+            (Self::ItalicBold, 2) => Self::Bold,
+            (Self::ItalicBold, 3) => Self::Italic,
+            (Self::ItalicBold, 5) => Self::Normal,
             (_, apostrophe_length) => unreachable!("Unused apostrophe length: {apostrophe_length}"),
         }
     }
@@ -325,22 +325,22 @@ impl TextFormatting {
 impl PartialOrd for TextFormatting {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         match (self, other) {
-            (TextFormatting::Normal, TextFormatting::Normal) => Some(Ordering::Equal),
-            (TextFormatting::Normal, TextFormatting::Italic) => Some(Ordering::Less),
-            (TextFormatting::Normal, TextFormatting::Bold) => Some(Ordering::Less),
-            (TextFormatting::Normal, TextFormatting::ItalicBold) => Some(Ordering::Less),
-            (TextFormatting::Italic, TextFormatting::Normal) => Some(Ordering::Greater),
-            (TextFormatting::Italic, TextFormatting::Italic) => Some(Ordering::Equal),
-            (TextFormatting::Italic, TextFormatting::Bold) => None,
-            (TextFormatting::Italic, TextFormatting::ItalicBold) => Some(Ordering::Less),
-            (TextFormatting::Bold, TextFormatting::Normal) => Some(Ordering::Greater),
-            (TextFormatting::Bold, TextFormatting::Italic) => None,
-            (TextFormatting::Bold, TextFormatting::Bold) => Some(Ordering::Equal),
-            (TextFormatting::Bold, TextFormatting::ItalicBold) => Some(Ordering::Less),
-            (TextFormatting::ItalicBold, TextFormatting::Normal) => Some(Ordering::Greater),
-            (TextFormatting::ItalicBold, TextFormatting::Italic) => Some(Ordering::Greater),
-            (TextFormatting::ItalicBold, TextFormatting::Bold) => Some(Ordering::Greater),
-            (TextFormatting::ItalicBold, TextFormatting::ItalicBold) => Some(Ordering::Equal),
+            (Self::Normal, Self::Normal) => Some(Ordering::Equal),
+            (Self::Normal, Self::Italic) => Some(Ordering::Less),
+            (Self::Normal, Self::Bold) => Some(Ordering::Less),
+            (Self::Normal, Self::ItalicBold) => Some(Ordering::Less),
+            (Self::Italic, Self::Normal) => Some(Ordering::Greater),
+            (Self::Italic, Self::Italic) => Some(Ordering::Equal),
+            (Self::Italic, Self::Bold) => None,
+            (Self::Italic, Self::ItalicBold) => Some(Ordering::Less),
+            (Self::Bold, Self::Normal) => Some(Ordering::Greater),
+            (Self::Bold, Self::Italic) => None,
+            (Self::Bold, Self::Bold) => Some(Ordering::Equal),
+            (Self::Bold, Self::ItalicBold) => Some(Ordering::Less),
+            (Self::ItalicBold, Self::Normal) => Some(Ordering::Greater),
+            (Self::ItalicBold, Self::Italic) => Some(Ordering::Greater),
+            (Self::ItalicBold, Self::Bold) => Some(Ordering::Greater),
+            (Self::ItalicBold, Self::ItalicBold) => Some(Ordering::Equal),
         }
     }
 }
@@ -357,12 +357,12 @@ impl Display for Text {
 impl Display for TextPiece {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            TextPiece::Text { text, formatting } => {
+            Self::Text { text, formatting } => {
                 write!(fmt, "{}", formatting)?;
                 write!(fmt, "{text}")?;
                 write!(fmt, "{}", formatting)
             }
-            TextPiece::DoubleBraceExpression {
+            Self::DoubleBraceExpression {
                 tag,
                 attributes: parameters,
             } => {
@@ -374,7 +374,7 @@ impl Display for TextPiece {
 
                 write!(fmt, "}}}}")
             }
-            TextPiece::InternalLink {
+            Self::InternalLink {
                 target: url,
                 options,
                 label,
@@ -388,7 +388,7 @@ impl Display for TextPiece {
                 }
                 write!(fmt, "]]")
             }
-            TextPiece::ListItem { list_prefix, text } => {
+            Self::ListItem { list_prefix, text } => {
                 write!(fmt, "{list_prefix} {text}")
             }
         }
@@ -408,10 +408,10 @@ impl Display for Attribute {
 impl Display for TextFormatting {
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            TextFormatting::Normal => Ok(()),
-            TextFormatting::Italic => write!(fmt, "''"),
-            TextFormatting::Bold => write!(fmt, "'''"),
-            TextFormatting::ItalicBold => write!(fmt, "'''''"),
+            Self::Normal => Ok(()),
+            Self::Italic => write!(fmt, "''"),
+            Self::Bold => write!(fmt, "'''"),
+            Self::ItalicBold => write!(fmt, "'''''"),
         }
     }
 }
